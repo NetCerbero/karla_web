@@ -1,5 +1,5 @@
 import { Box } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -14,6 +14,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { UsuarioService } from "../../service/UsuarioService";
 const useStyles = makeStyles({
     table: {
       minWidth: 650,
@@ -21,47 +22,23 @@ const useStyles = makeStyles({
   });
 export default function Usuario(props) {
     const classes = useStyles();
-    const [listUsuario, setListUsuario] = useState([
-        {
-            id: 1,
-            nombre: 'Luis Yerko',
-            apellido: 'Laura Tola'
-        },
-        {
-            id: 2,
-            nombre: "karla",
-            apellido: "nogales"
-        },
-        {
-            id: 1,
-            nombre: 'Luis Yerko',
-            apellido: 'Laura Tola'
-        },
-        {
-            id: 2,
-            nombre: "karla",
-            apellido: "nogales"
-        }, {
-            id: 1,
-            nombre: 'Luis Yerko',
-            apellido: 'Laura Tola'
-        },
-        {
-            id: 2,
-            nombre: "karla",
-            apellido: "nogales"
-        }, {
-            id: 1,
-            nombre: 'Luis Yerko',
-            apellido: 'Laura Tola'
-        },
-        {
-            id: 2,
-            nombre: "karla",
-            apellido: "nogales"
-        }
+    let [listUsuario, setListUsuario] = useState([]);
 
-    ]);
+
+    const getList = () => {
+        console.log("cargando info")
+        UsuarioService.get()
+        .then(({data}) =>{
+            //informacion que responde el servidor
+            console.log("data usuario",data);
+            setListUsuario(data);
+        }).catch((e) =>{
+            //error que se genera en la peticion
+            console.log("error usuario",e);
+        })
+    }
+
+    useEffect(getList,[]);
 
     const ViewTable = () => {
         return <TableContainer component={Paper}>
@@ -88,13 +65,13 @@ export default function Usuario(props) {
         </TableContainer>
     }
     return <Box>
-        <List component="nav" aria-label="main mailbox folders">
+       {/*  <List component="nav" aria-label="main mailbox folders">
             {listUsuario.map((e) => {
                 return <ListItem button onClick={() => alert(e.id)}>
                     <ListItemText primary={e.nombre + " " + e.apellido} />
                 </ListItem>
             })}
-        </List>
+        </List> */}
         {ViewTable()}  
     </Box>
 }

@@ -5,8 +5,9 @@ import UsuarioCrear from './Page/usuario/UsuarioCrear';
 
 function App() {
   return <div>
-    <Usuario />
+    
     <UsuarioCrear/>
+    <Usuario />
   </div>
 }
 

@@ -1,8 +1,9 @@
-import { Box, Button } from "@material-ui/core";
+import { Box, Button, Grid, Paper } from "@material-ui/core";
 import React, { useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import  axios from "axios";
+import axios from "axios";
+import { UsuarioService } from "../../service/UsuarioService";
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
@@ -14,32 +15,46 @@ const useStyles = makeStyles((theme) => ({
 export default function UsuarioCrear(props) {
     const classes = useStyles();
     const [formState, setFormState] = useState({
-        nombre:'',
-        apellido:''
+        nombre: '',
+        apellido: ''
     })
 
-    const onChangeInput = ( event) => {
+    const onChangeInput = (event) => {
         setFormState((prev) => ({
             ...prev,
-            [event.target.name] : event.target.value
+            [event.target.name]: event.target.value
         }));
     }
 
-    const onSubmit = () => {
-        console.log("llamando al api");
-        axios.get("http://localhost:5050/ejemplo")
-        .then(({data}) => {
-            console.log("data",data);
-        }).catch((e) => console.log("error",e))
+    const onSubmit = (event) => {
+        event.preventDefault();
+        console.log("formstate", formState);
+        UsuarioService.create(formState)
+            .then(({ data }) => {
+                console.log("todo bien")
+                window.location="/";
+            }).catch((e) => {
+                console.log("error crear usuario", e);
+            })
     }
 
-    useEffect(onSubmit,[]);
+    return <Box m={5}>
+        <Paper>
+            <Box p={2}>
+                <form onSubmit={onSubmit} className={classes.root} noValidate autoComplete="off">
+                    <Grid container>
+                        <Grid item xs={6} md={6}>
+                            <TextField fullWidth={true} onChange={onChangeInput} name="nombre" label="Nombre" value={formState.nombre} />
+                        </Grid>
+                        <Grid item xs={6} md={6}>
+                            <TextField fullWidth onChange={onChangeInput} name="apellido" label="Apellido" value={formState.apellido} />
+                        </Grid>
+                    </Grid>
 
-    return <Box>
-        <form className={classes.root} noValidate autoComplete="off">
-            <TextField onChange={onChangeInput} name="nombre" label="Nombre" value={formState.nombre} />
-            <TextField onChange={onChangeInput} name="apellido" label="Apellido" value={formState.apellido}/>
-            <Button  onClick={()=> console.log("formState",formState)}>CREAR</Button>
-        </form>
+
+                    <Button variant="contained" color="primary" type="submit">CREAR</Button>
+                </form>
+            </Box>
+        </Paper>
     </Box>
 }
